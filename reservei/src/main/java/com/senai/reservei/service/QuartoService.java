@@ -1,5 +1,6 @@
 package com.senai.reservei.service;
 
+import com.senai.reservei.exception.QuartoNaoEncontradoException;
 import com.senai.reservei.model.Quarto;
 import com.senai.reservei.model.StatusQuartoEnum;
 import com.senai.reservei.repository.QuartoRepository;
@@ -31,20 +32,19 @@ public class QuartoService {
     }
 
     public Quarto buscarQuarto(Long id) {
-        return quartoRepository.findById(id).orElseThrow(() ->
-            new RuntimeException("Quarto não encontrado")
+        return quartoRepository.findById(id).orElseThrow(
+                QuartoNaoEncontradoException::new
         );
     }
 
     public Quarto atualizarQuarto(Quarto novoQuarto, Long id) {
-        Quarto quarto = quartoRepository.findById(id).orElseThrow(() ->
-                new RuntimeException("Quarto não encontrado")
-        );
+        Quarto quarto = buscarQuarto(id);
         BeanUtils.copyProperties(novoQuarto, quarto);
         return quartoRepository.save(quarto);
     }
 
     public void deletarQuarto(Long id) {
+        buscarQuarto(id);
         quartoRepository.deleteById(id);
     }
 

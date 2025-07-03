@@ -3,6 +3,7 @@ package com.senai.reservei.controller;
 import com.senai.reservei.model.Reserva;
 import com.senai.reservei.service.ReservaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,12 +19,14 @@ public class ReservaController {
     }
 
     @PostMapping
-    public Reserva criarReserva(@RequestBody Reserva reserva) {
+    public ResponseEntity criarReserva(@RequestBody Reserva reserva) {
         return reservaService.criarReserva(reserva);
     }
 
     @GetMapping("/hospede")
-    public List<Reserva> buscarReservaHospede(@RequestParam String documento) { return reservaService.buscarReservaHospede(documento); }
+    public List<Reserva> buscarReservaHospede(@RequestParam String documento) {
+        return reservaService.buscarReservaHospede(documento);
+    }
 
     @PutMapping("/checkin/{id}")
     public Reserva fazerCheckin(@PathVariable Long id) {
@@ -36,5 +39,7 @@ public class ReservaController {
     }
 
     @PutMapping("/cancelar/{id}")
-    public Reserva cancelarReserva(@PathVariable Long id) { return reservaService.cancelarReserva(id); }
+    public Reserva cancelarReserva(@PathVariable Long id) {
+        return reservaService.cancelarReserva(id);
+    }
 }

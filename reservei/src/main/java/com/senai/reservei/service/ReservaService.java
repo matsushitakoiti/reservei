@@ -1,16 +1,15 @@
 package com.senai.reservei.service;
 
-import com.senai.reservei.model.Quarto;
+import com.senai.reservei.exception.*;
 import com.senai.reservei.model.Reserva;
 import com.senai.reservei.model.StatusQuartoEnum;
 import com.senai.reservei.model.StatusReservaEnum;
 import com.senai.reservei.repository.ReservaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 
@@ -27,41 +26,38 @@ public class ReservaService {
         this.quartoService = quartoService;
     }
 
-    public Reserva criarReserva(Reserva reserva) {
+    public ResponseEntity criarReserva(Reserva reserva) {
         Date dataAtual = new Date();
         if (dataAtual.after(reserva.getDataEntrada())) {
-            throw new RuntimeException("Data de entrada deve ser posterior a data atual.");
+            throw new ValidacaoException("Data de entrada deve ser posterior a data de atual");
         }
+
         if (reserva.getDataSaida().before(reserva.getDataEntrada())) {
-            throw new RuntimeException("Data de saida deve ser depois da data de entrada");
+            throw new ValidacaoException("Data de saida deve ser posterior a data de entrada");
         }
 
         hospedeService.buscarHospedes(reserva.getHospede().getId());
         quartoService.buscarQuarto(reserva.getQuarto().getId());
 
-        boolean reservaExistente = reservaRepository.
-                existsByDataEntradaLessThanEqualAndDataSaidaGreaterThanEqualAndStatusAndQuartoId
-                        (reserva.getDataSaida(), reserva.getDataEntrada(),
-                                StatusReservaEnum.ATIVA, reserva.getQuarto().getId());
+        boolean reservaExistente = reservaRepository.existsByDataEntradaLessThanEqualAndDataSaidaGreaterThanEqualAndStatusAndQuartoId(reserva.getDataSaida(), reserva.getDataEntrada(), StatusReservaEnum.ATIVA, reserva.getQuarto().getId());
 
         if (reservaExistente) {
-            throw new RuntimeException("Data não disponivel");
+            return new ResponseEntity<>("Data não disponivel", HttpStatus.NOT_FOUND);
         }
 
-        return reservaRepository.save(reserva);
+        return new ResponseEntity<>(reservaRepository.save(reserva), HttpStatus.CREATED);
     }
 
     public List<Reserva> buscarReservaHospede(String documento) {
         List<Reserva> reservas = reservaRepository.findAllByHospedeDocumentoAndStatus(documento, StatusReservaEnum.ATIVA);
         if (reservas.isEmpty()) {
-            throw new RuntimeException("Nenhuma reserva encontrada para o documento " + documento);
+            throw new ReservaNaoEncontradaException(documento);
         }
         return reservas;
     }
 
     public Reserva buscarReserva(Long id) {
-        return reservaRepository.findById(id).orElseThrow(() ->
-                new RuntimeException("Reserva não econtrada")
+        return reservaRepository.findById(id).orElseThrow(ReservaNaoEncontradaException::new
         );
     }
 
@@ -73,14 +69,14 @@ public class ReservaService {
 
     public Reserva fazerCheckout(Long id) {
         Reserva reserva = buscarReserva(id);
-        Date dataAtual = new Date();
 
-        if(dataAtual.before(reserva.getDataSaida())) {
-            throw new RuntimeException("Checkout só pode ser feito a partir da data " + reserva.getDataSaida());
+        if(reserva.getQuarto().getStatus() != StatusQuartoEnum.OCUPADO) {
+            new ResponseEntity<>("Checkou só pode ser realizado apos o Checkin", HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
-        if(reserva.getQuarto().getStatus() != StatusQuartoEnum.OCUPADO){
-            throw new RuntimeException("Checkout só pode ser feito com quartos OCUPADOS!. Status atual do quarto: " + reserva.getStatus());
+        Date dataAtual = new Date();
+        if(dataAtual.before(reserva.getDataSaida())) {
+            new ResponseEntity<>("Checkout só pode ser feito a partir da data " + reserva.getDataSaida(), HttpStatus.UNPROCESSABLE_ENTITY);
         }
 
         reserva.setStatus(StatusReservaEnum.CONCLUIDA);
@@ -90,9 +86,7 @@ public class ReservaService {
 
     public Reserva cancelarReserva(Long id) {
         Reserva reserva = buscarReserva(id);
-
         reserva.setStatus(StatusReservaEnum.CANCELADA);
-//        reserva.getQuarto().setStatus(StatusQuartoEnum.DISPONIVEL);
         return reservaRepository.save(reserva);
     }
 

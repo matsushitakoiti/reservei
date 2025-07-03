@@ -26,25 +26,20 @@ public class HospedeService {
         return hospedeRepository.save(hospede);
     }
 
-    public Hospede buscarHospedes(Long id) throws Exception {
-        return hospedeRepository.findById(id).orElseThrow(() ->
-                new HospedeNaoEncontradoException()
-
+    public Hospede buscarHospedes(Long id) {
+        return hospedeRepository.findById(id).orElseThrow(
+                HospedeNaoEncontradoException::new
         );
     }
 
     public Hospede atualizarHospedes(Hospede novoHospede, Long id) {
-        Hospede hospede = hospedeRepository.findById(id).orElseThrow(() ->
-                new RuntimeException("Hospede não encontrado")
-        );
+        Hospede hospede = buscarHospedes(id);
         BeanUtils.copyProperties(novoHospede, hospede);
         return hospedeRepository.save(hospede);
     }
 
     public void deletarHospedes(Long id) {
-        Hospede hospede = hospedeRepository.findById(id).orElseThrow(() ->
-                new RuntimeException("Hospede não encontrado")
-        );
+        Hospede hospede = buscarHospedes(id);
         hospedeRepository.delete(hospede);
     }
 }
