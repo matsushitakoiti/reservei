@@ -1,7 +1,9 @@
 package com.senai.reservei.controller;
 
-import com.senai.reservei.model.Hospede;
+import com.senai.reservei.dto.HospedeCreateDTO;
+import com.senai.reservei.dto.HospedeDTO;
 import com.senai.reservei.service.HospedeService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,6 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/hospedes")
+@CrossOrigin(origins = "http://localhost:8081/")
 public class HospedeController {
     private final HospedeService hospedeService;
 
@@ -18,22 +21,22 @@ public class HospedeController {
     }
 
     @GetMapping
-    public List<Hospede> listarHospedes(){
+    public List<HospedeDTO> listarHospedes(){
         return hospedeService.listarHospedes();
     }
 
     @PostMapping
-    public Hospede criarHospede(@RequestBody Hospede hospede) {
+    public HospedeDTO criarHospede(@RequestBody @Valid HospedeCreateDTO hospede) {
         return hospedeService.criarHospede(hospede);
     }
 
     @GetMapping("/{id}")
-    public Hospede buscarHospede(@PathVariable Long id) {
-        return hospedeService.buscarHospedes(id);
+    public HospedeDTO buscarHospede(@PathVariable Long id) {
+        return hospedeService.buscarHospedeDTO(id);
     }
 
     @PutMapping("/{id}")
-    public Hospede atualizarHospede(@RequestBody Hospede novoHospede, @PathVariable Long id) {
+    public HospedeDTO atualizarHospede(@RequestBody @Valid HospedeCreateDTO novoHospede, @PathVariable Long id) {
         return hospedeService.atualizarHospedes(novoHospede, id);
     }
 

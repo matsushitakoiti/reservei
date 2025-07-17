@@ -12,4 +12,6 @@ import java.util.List;
 public interface ReservaRepository extends JpaRepository<Reserva, Long> {
     boolean existsByDataEntradaLessThanEqualAndDataSaidaGreaterThanEqualAndStatusAndQuartoId(Date dataSaida, Date dataEntrada, StatusReservaEnum status, Long quarto);
     List<Reserva> findAllByHospedeDocumentoAndStatus(String documento, StatusReservaEnum status);
+
+    boolean existsByDataEntradaLessThanEqualAndDataSaidaGreaterThanEqualAndQuartoId(Date dataSaida, Date dataEntrada, Long quarto);
 }

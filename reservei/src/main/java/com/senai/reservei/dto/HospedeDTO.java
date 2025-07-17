@@ -1,20 +1,19 @@
 package com.senai.reservei.dto;
 
-import jakarta.validation.constraints.*;
-
-public class HospedeCreateDTO {
-    @NotBlank(message = "Nome não pode ser vazio")
-    @Size(max = 50, message = "Nome não pode ter mais que 50 caracteres")
+public class HospedeDTO {
+    private Long id;
     private String nome;
-    @NotBlank(message = "Documento não pode ser vazio")
-    @Pattern(regexp = "^\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}$", message = "CPF inválido")
     private String documento;
-    @NotBlank(message = "Telefone não pode ser vazio")
-    @Pattern(regexp = "^\\(\\d{2}\\)\\s(\\d{4,5})-\\d{4}$", message = "Telefone inválido")
     private String telefone;
-    @NotBlank(message = "Email não pode ser vazio")
-    @Email(message = "Email inválido")
     private String email;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getNome() {
         return nome;
