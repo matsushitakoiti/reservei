@@ -56,10 +56,10 @@ public class QuartoController {
         quartoService.deletarQuarto(id);
     }
 
-    @GetMapping("/disponiveis/filtros")
+    @GetMapping("/disponiveis/filtro")
     public List<QuartoDTO> listarQuartosDisponiveisNoPeriodo(
-            @RequestParam @DateTimeFormat(pattern = "dd-mm-yyyy") Date dataEntrada,
-            @RequestParam @DateTimeFormat(pattern = "dd-mm-yyyy") Date dataSaida,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-mm-dd") Date dataEntrada,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-mm-dd") Date dataSaida,
             @RequestParam TipoQuartoEnum tipo)
     {
         return quartoService.listarQuartosComFiltro(dataEntrada, dataSaida, tipo);
