@@ -17,6 +17,8 @@ public class Usuario implements UserDetails {
     private String usuario;
     private String senha;
 
+    private RoleEnum role;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("USUARIO COMUM"));
@@ -54,5 +56,13 @@ public class Usuario implements UserDetails {
 
     public void setSenha(String senha) {
         this.senha = senha;
+    }
+
+    public RoleEnum getRole() {
+        return role;
+    }
+
+    public void setRole(RoleEnum role) {
+        this.role = role;
     }
 }

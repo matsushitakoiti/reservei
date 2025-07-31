@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 public class HospedeMapper {
     public Hospede toModel(HospedeCreateDTO hospedeCreateDTO){
         Hospede hospede = new Hospede();
+        hospede.setUsuario(hospedeCreateDTO.getUsuario());
         hospede.setNome(hospedeCreateDTO.getNome());
         hospede.setDocumento(hospedeCreateDTO.getDocumento());
         hospede.setTelefone(hospedeCreateDTO.getTelefone());

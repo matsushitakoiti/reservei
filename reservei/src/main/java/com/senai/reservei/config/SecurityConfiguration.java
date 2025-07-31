@@ -36,7 +36,7 @@ public class SecurityConfiguration {
                 )
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.GET,"/quartos/**").permitAll()
-                        .requestMatchers(HttpMethod.POST,"/hospedes").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/usuarios/hospede").permitAll()
                         .requestMatchers("/auth/**"). permitAll()
                         .requestMatchers(HttpMethod.POST,"/quartos/**").permitAll() //Excluir
                         .anyRequest().authenticated()

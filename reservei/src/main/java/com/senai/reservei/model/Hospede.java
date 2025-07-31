@@ -14,6 +14,8 @@ public class Hospede {
     private String documento;
     private String telefone;
     private String email;
+    private Long usuario;
+
 
     public Long getId() {
         return id;
@@ -53,5 +55,13 @@ public class Hospede {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Long getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Long usuario) {
+        this.usuario = usuario;
     }
 }
