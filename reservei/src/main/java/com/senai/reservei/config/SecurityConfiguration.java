@@ -38,8 +38,11 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET,"/quartos/**").permitAll()
                         .requestMatchers(HttpMethod.POST,"/usuarios/hospede").permitAll()
                         .requestMatchers("/auth/**"). permitAll()
-                        .requestMatchers(HttpMethod.POST,"/quartos/**").permitAll() //Excluir
+                        .requestMatchers(HttpMethod.POST,"/quartos/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST,"/reservas").hasRole("HOSPEDE")
+                        .requestMatchers(HttpMethod.POST,"/reservas/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
+
                 ).addFilterBefore(jwtAuthenticationMiddleware, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

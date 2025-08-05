@@ -22,7 +22,7 @@ public class TokenService {
             Instant tempoExpiracao = LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03.00"));
             return JWT.create()
                     .withIssuer("reservei")
-                    .withSubject(usuario.getId().toString())
+                    .withSubject(usuario.getUsername())
                     .withExpiresAt(tempoExpiracao)
                     .sign(Algorithm.HMAC256(chaveSecreta));
         } catch (IllegalArgumentException e) {
